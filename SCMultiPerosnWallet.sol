@@ -6,9 +6,10 @@ contract MultiPersonWallet {
 
     struct Participant{
         address participant;
-        uint vote;
         bool voted;
     }
+
+    Participant[4] public participantsArray;
 
     address public Mainman;
 
@@ -18,7 +19,7 @@ contract MultiPersonWallet {
 
     function addparticipant(address _participant) public {
         require(msg.sender == Mainman);
-        participants.pati
+        participantsArray.push(Participant(_participant, false));
     }
 
     mapping(address => Participant) public participants;
