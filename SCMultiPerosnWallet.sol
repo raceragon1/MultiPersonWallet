@@ -5,36 +5,42 @@ pragma solidity ^0.8.1;
 contract MultiPersonWallet {
 
     //Making the set of people 
-    struct Participant{
-        address participant;
-        bool voted;
-    }
-
-    Participant[] public participantsArray;
-    mapping(address => Participant) public participants;
+    address[] public Participants;
+    
 
     //the contract deployer and Mainman who is in charge
     address payable public bossman;  //deployer
+
+
 
     constructor(){
         bossman = payable(msg.sender);
     }
 
-    // adding a person to the wallet          //Works
+    mapping (address=>bool) owners;
 
+    // adding a person to the wallet          //Works
     function addparticipant(address _participant) public {
         require(msg.sender == bossman);
-        participantsArray.push(Participant(_participant, false));
+        Participants.push(_participant);
+        owners[_participant] = true;      
     }
 
-   
-    //adding money and viewing the contract balance     //works
+    uint NumberofdecidingVotes = (Participants.length)/2;
 
+    modifier Owners{
+        require( owners[msg.sender]);
+        _;
+    }
+
+    //adding money and viewing the contract balance     //works
     function addMoney() public payable{}    
 
     function contractbalance() view public returns(uint){
        return address(this).balance;
     }
+
+
 
     //requests
     struct Requests {
@@ -42,6 +48,7 @@ contract MultiPersonWallet {
         address payable recipient;
         string reason;
         uint votecount;
+        bool Completed;
     }
 
     Requests[] public RequestsArray;
@@ -49,22 +56,30 @@ contract MultiPersonWallet {
     //View current requests 
 
     //requesting to transfer money
-    function request(uint _value,address payable _to, string memory _reason) public {
-     RequestsArray.push(Requests(_value, _to, _reason,0));
+    function request(uint _value,address payable _to, string memory _reason) public Owners {
+     RequestsArray.push(Requests(_value, _to, _reason,0,false));
 
     }
 
     //vote 
-    function vote(uint _requestno) public {
-        //require(participants[msg.sender].voted = false, "Already voted");
-        participants[msg.sender].voted = true;
+    struct AllVotes{
+        address Voter;
+        bool Voted;    
+    }
+
+    mapping(uint => mapping(address => AllVotes)) votes;
+
+    function vote(uint _requestno) public Owners {
+        require(votes[_requestno][msg.sender].Voted = false, "Already voted");
         RequestsArray[_requestno].votecount += 1;
+        votes[_requestno][msg.sender] = AllVotes(msg.sender, true);
     }
 
     //sending money form the contract
-    function sendmoney(uint _requestno) public payable{
-        if (RequestsArray[_requestno].votecount >= 2){
+    function sendmoney(uint _requestno) public Owners payable{
+        if (RequestsArray[_requestno].votecount >= NumberofdecidingVotes){
             (RequestsArray[_requestno].recipient).transfer(RequestsArray[_requestno].value);
+            RequestsArray[_requestno].Completed = true;
         }
         
     }
