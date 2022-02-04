@@ -27,8 +27,6 @@ contract MultiPersonWallet {
         participantsArray.push(Participant(_participant, false));
     }
 
-  
-
    
     //adding money and viewing the contract balance     //works
 
@@ -41,7 +39,7 @@ contract MultiPersonWallet {
     //requests
     struct Requests {
         uint value;
-        address recipient;
+        address payable recipient;
         string reason;
         uint votecount;
     }
@@ -51,20 +49,24 @@ contract MultiPersonWallet {
     //View current requests 
 
     //requesting to transfer money
-    function request(uint _value, address _to, string memory _reason) public {
+    function request(uint _value,address payable _to, string memory _reason) public {
      RequestsArray.push(Requests(_value, _to, _reason,0));
 
     }
 
     //vote 
     function vote(uint _requestno) public {
-        Participant.voted = true;
+        //require(participants[msg.sender].voted = false, "Already voted");
+        participants[msg.sender].voted = true;
         RequestsArray[_requestno].votecount += 1;
     }
 
     //sending money form the contract
-    function sendmoney(uint value, address payable to) public payable{
-
+    function sendmoney(uint _requestno) public payable{
+        if (RequestsArray[_requestno].votecount >= 2){
+            (RequestsArray[_requestno].recipient).transfer(RequestsArray[_requestno].value);
+        }
+        
     }
 
 
