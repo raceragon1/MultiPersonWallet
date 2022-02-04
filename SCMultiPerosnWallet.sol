@@ -11,6 +11,7 @@ contract MultiPersonWallet {
     }
 
     Participant[] public participantsArray;
+    mapping(address => Participant) public participants;
 
     //the contract deployer and Mainman who is in charge
     address payable public bossman;  //deployer
@@ -27,7 +28,7 @@ contract MultiPersonWallet {
         participantsArray.push(Participant(_participant, false));
     }
 
-   // mapping(address => Participant) public participants;
+  
 
    
     //adding money and viewing the contract balance     //works
@@ -43,6 +44,7 @@ contract MultiPersonWallet {
         uint value;
         address recipient;
         string reason;
+        uint votecount;
     }
 
     Requests[] public RequestsArray;
@@ -51,13 +53,15 @@ contract MultiPersonWallet {
 
     //requesting to transfer money
     function request(uint _value, address _to, string memory _reason) public {
-    
-    RequestsArray.push(Requests(_value, _to, _reason));
+     RequestsArray.push(Requests(_value, _to, _reason,0));
 
     }
 
     //vote 
-    
+    function vote(uint _requestno) public {
+        Participant.voted = true;
+        RequestsArray[_requestno].votecount += 1;
+    }
 
     //sending money form the contract
     function sendmoney(uint value, address payable to) public payable{
