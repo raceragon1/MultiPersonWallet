@@ -70,7 +70,7 @@ contract MultiPersonWallet {
     mapping(uint => mapping(address => AllVotes)) votes;
 
     function vote(uint _requestno) public Owners {
-        require(votes[_requestno][msg.sender].Voted = false, "Already voted");
+        require(votes[_requestno][msg.sender].Voted = false);
         RequestsArray[_requestno].votecount += 1;
         votes[_requestno][msg.sender] = AllVotes(msg.sender, true);
     }
