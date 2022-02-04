@@ -35,6 +35,22 @@ contract MultiPersonWallet {
        return address(this).balance;
     }
 
+    //requests
+    struct Requests {
+        uint value;
+        address recipient;
+        string reason;
+    }
+
+    Requests[] public RequestsArray;
+    
+    //View current requests 
+
+    //requesting to transfer money
+    function request(uint value) view public {
+
+    }
+
     //sending money form the contract
     function sendmoney(uint value, address payable to) public payable{
 
