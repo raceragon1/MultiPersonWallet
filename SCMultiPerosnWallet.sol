@@ -24,7 +24,6 @@ contract MultiPersonWallet {
 
     function addparticipant(address _participant) public {
         require(msg.sender == bossman);
-
         participantsArray.push(Participant(_participant, false));
     }
 
