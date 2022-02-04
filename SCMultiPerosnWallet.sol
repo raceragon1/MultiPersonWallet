@@ -19,7 +19,8 @@ contract MultiPersonWallet {
         bossman = payable(msg.sender);
     }
 
-    // adding a person to the wallet
+    // adding a person to the wallet          //Works
+
     function addparticipant(address _participant) public {
         require(msg.sender == bossman);
 
@@ -30,6 +31,7 @@ contract MultiPersonWallet {
 
    
     //adding money and viewing the contract balance     //works
+
     function addMoney() public payable{}    
 
     function contractbalance() view public returns(uint){
@@ -48,9 +50,14 @@ contract MultiPersonWallet {
     //View current requests 
 
     //requesting to transfer money
-    function request(uint value) view public {
+    function request(uint _value, address _to, string memory _reason) public {
+    
+    RequestsArray.push(Requests(_value, _to, _reason));
 
     }
+
+    //vote 
+    
 
     //sending money form the contract
     function sendmoney(uint value, address payable to) public payable{
