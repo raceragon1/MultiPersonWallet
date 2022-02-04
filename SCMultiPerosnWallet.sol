@@ -13,23 +13,24 @@ contract MultiPersonWallet {
     Participant[] public participantsArray;
 
     //the contract deployer and Mainman who is in charge
-    address public Mainman;
+    address payable public bossman;  //deployer
 
     constructor(){
-        msg.sender == Mainman;
+        bossman = payable(msg.sender);
     }
 
     // adding a person to the wallet
     function addparticipant(address _participant) public {
-        require(msg.sender == Mainman);
+        require(msg.sender == bossman);
+
         participantsArray.push(Participant(_participant, false));
     }
 
-    mapping(address => Participant) public participants;
+   // mapping(address => Participant) public participants;
 
    
-    //adding money and viewing the contract balance
-    function addMoney(uint value) public payable{}
+    //adding money and viewing the contract balance     //works
+    function addMoney() public payable{}    
 
     function contractbalance() view public returns(uint){
        return address(this).balance;
@@ -43,7 +44,7 @@ contract MultiPersonWallet {
     }
 
     Requests[] public RequestsArray;
-    
+
     //View current requests 
 
     //requesting to transfer money
