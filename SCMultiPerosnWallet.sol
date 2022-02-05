@@ -51,28 +51,31 @@ contract MultiPersonWallet {
         bool Completed;
     }
 
-    Requests[] public RequestsArray;
+    //Request[] public RequestArray;
+    mapping (uint => Requests) public RequestsArray;
 
     //View current requests 
 
     //requesting to transfer money
-    function request(uint _value,address payable _to, string memory _reason) public Owners {
-     RequestsArray.push(Requests(_value, _to, _reason,0,false));
+    function request(uint _requestno, uint _value,address payable _to, string memory _reason) public Owners {
+     RequestsArray[_requestno]= Requests(_value, _to, _reason,0,false);
 
     }
 
     //vote 
-    struct AllVotes{
-        address Voter;
-        bool Voted;    
-    }
-
-    mapping(uint => mapping(address => AllVotes)) votes;
+    
+    //struct AllVotes{
+    //  address Voter;
+    //  bool Voted;    
+    //}
+    
+    mapping(uint => mapping(address => bool)) votes;
 
     function vote(uint _requestno) public Owners {
-        require(votes[_requestno][msg.sender].Voted = false);
+        require(votes[_requestno][msg.sender] = false);
+
         RequestsArray[_requestno].votecount += 1;
-        votes[_requestno][msg.sender] = AllVotes(msg.sender, true);
+        votes[_requestno][msg.sender] =true;
     }
 
     //sending money form the contract
