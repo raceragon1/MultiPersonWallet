@@ -63,7 +63,7 @@ contract MultiPersonWallet {
     }
 
     //vote 
-    
+
     //struct AllVotes{
     //  address Voter;
     //  bool Voted;    
@@ -86,9 +86,6 @@ contract MultiPersonWallet {
         }
         
     }
-
-
-
 
 
 
