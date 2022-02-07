@@ -26,7 +26,7 @@ contract MultiPersonWallet {
         owners[_participant] = true;      
     }
 
-    uint NumberofdecidingVotes = (Participants.length)/2;
+    
 
     modifier Owners{
         require( owners[msg.sender]);
@@ -51,14 +51,14 @@ contract MultiPersonWallet {
         bool Completed;
     }
 
-    //Request[] public RequestArray;
-    mapping (uint => Requests) public RequestsArray;
+    Requests[] public RequestsArray;
+    //mapping (uint => Requests) public RequestsArray;
 
     //View current requests 
 
     //requesting to transfer money
-    function request(uint _requestno, uint _value,address payable _to, string memory _reason) public Owners {
-     RequestsArray[_requestno]= Requests(_value, _to, _reason,0,false);
+    function request(uint _value,address payable _to, string memory _reason) public Owners {
+     RequestsArray.push(Requests(_value, _to, _reason,0,false));
 
     }
 
@@ -73,20 +73,21 @@ contract MultiPersonWallet {
 
     function vote(uint _requestno) public Owners {
         require(votes[_requestno][msg.sender] == false,"Already Voted");
+        require( RequestsArray.length != 0, "No current Requests");
 
         RequestsArray[_requestno].votecount += 1;
-        votes[_requestno][msg.sender] == true;
+        votes[_requestno][msg.sender] = true;
     }
 
     //sending money form the contract
     function sendmoney(uint _requestno) public Owners payable{
-        if (RequestsArray[_requestno].votecount >= NumberofdecidingVotes){
-            (RequestsArray[_requestno].recipient).transfer(RequestsArray[_requestno].value);
-            RequestsArray[_requestno].Completed = true;
-        }
+        uint NumberofdecidingVotes = (Participants.length)/2;
+        require(RequestsArray[_requestno].votecount > NumberofdecidingVotes,"Insufficient no of Votes");
+
+        RequestsArray[_requestno].recipient.transfer(RequestsArray[_requestno].value);
+        RequestsArray[_requestno].Completed = true;
+        
         
     }
-
-
 
 }
