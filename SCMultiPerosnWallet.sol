@@ -72,10 +72,10 @@ contract MultiPersonWallet {
     mapping(uint => mapping(address => bool)) votes;
 
     function vote(uint _requestno) public Owners {
-        require(votes[_requestno][msg.sender] = false);
+        require(votes[_requestno][msg.sender] == false,"Already Voted");
 
         RequestsArray[_requestno].votecount += 1;
-        votes[_requestno][msg.sender] =true;
+        votes[_requestno][msg.sender] == true;
     }
 
     //sending money form the contract
