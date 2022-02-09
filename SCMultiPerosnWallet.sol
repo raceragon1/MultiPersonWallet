@@ -68,26 +68,35 @@ contract MultiPersonWallet {
     //  address Voter;
     //  bool Voted;    
     //}
-    
+    modifier NoRequests{
+        require( RequestsArray.length != 0, "No current Requests");
+        _;
+    }
+
+    modifier RequestCompleted(uint _requestno){
+        require(RequestsArray[_requestno].Completed == false,"Request Completed");
+        _;
+    }
+
+
     mapping(uint => mapping(address => bool)) votes;
 
-    function vote(uint _requestno) public Owners {
+    function vote(uint _requestno) public Owners NoRequests RequestCompleted(_requestno) {
         require(votes[_requestno][msg.sender] == false,"Already Voted");
-        require( RequestsArray.length != 0, "No current Requests");
 
         RequestsArray[_requestno].votecount += 1;
         votes[_requestno][msg.sender] = true;
     }
 
     //sending money form the contract
-    function sendmoney(uint _requestno) public Owners payable{
+    function sendmoney(uint _requestno) public Owners NoRequests RequestCompleted(_requestno) payable{
+
         uint NumberofdecidingVotes = (Participants.length)/2;
         require(RequestsArray[_requestno].votecount > NumberofdecidingVotes,"Insufficient no of Votes");
 
         RequestsArray[_requestno].recipient.transfer(RequestsArray[_requestno].value);
         RequestsArray[_requestno].Completed = true;
-        
-        
+    
     }
 
 }
