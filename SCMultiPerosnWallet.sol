@@ -21,7 +21,7 @@ contract MultiPersonWallet {
 
     // adding a person to the wallet          //Works
     function addparticipant(address _participant) public {
-        require(msg.sender == bossman);
+        require(msg.sender == bossman, "Not BOSSMAN");
         Participants.push(_participant);
         owners[_participant] = true;      
     }
